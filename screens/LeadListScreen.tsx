@@ -10,8 +10,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'LeadList'>;
 // TODO: Replace static leads with useQuery + leadsApi.getAll()
 // Consider loading, error, and empty states
 const leads: Lead[] = [
-  { id: 1, name: 'John Doe', email: 'john.doe@example.com' },
-  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com' },
+  // { id: 1, name: 'John Doe', email: 'john.doe@example.com' },
+  // { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com' },
 ];
 
 export default function LeadListScreen({ navigation }: Props) {
