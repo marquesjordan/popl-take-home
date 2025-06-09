@@ -5,14 +5,16 @@ import { Button } from 'react-native-paper';
 import { LeadFormComponent } from '../components/LeadForm';
 import { Lead, LeadsParamList } from '../types';
 import { leadsApi } from '../api/leadsApi';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useLeadForm } from '../hooks/useLeadForm';
 
 type EditDetailRouteProp = RouteProp<LeadsParamList, 'EditLead'>;
-
+type NavigationProp = NativeStackNavigationProp<LeadsParamList>;
 
 export default function EditLeadScreen() {
     const { params: { lead } } = useRoute<EditDetailRouteProp>();
+    const navigation = useNavigation<NavigationProp>();
     const {
         lead: updatedLead,
         errors,
@@ -32,6 +34,7 @@ export default function EditLeadScreen() {
         },
         onSubmit: async (updatedLead) => {
             await leadsApi.update(lead.id, updatedLead);
+            navigation.goBack();
         },
     });
 

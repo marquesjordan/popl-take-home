@@ -1,16 +1,37 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { leadsApi } from '../api/leadsApi';
+import { useMemo } from 'react';
 
-export function useLeads() {
+interface UseLeadsOptions {
+    searchQuery?: string;
+    selectedTags?: string[];
+}
+
+export function useLeads({ searchQuery = '', selectedTags = [] }: UseLeadsOptions = {}) {
+    const queryKey = useMemo(() => ['leads', searchQuery, selectedTags], [searchQuery, selectedTags]);
+
     return useInfiniteQuery({
-        queryKey: ['leads'],
+        queryKey,
         initialPageParam: 1,
         queryFn: async ({ pageParam }) => {
             try {
                 const data = await leadsApi.getAll();
-                console.log('Fetched leads:', data);
+
+                const filteredData = data.filter(lead => {
+                    const matchesSearch = searchQuery === '' ||
+                        lead.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        lead.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        lead.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        lead.phone?.toLowerCase().includes(searchQuery.toLowerCase());
+
+                    const matchesTags = selectedTags.length === 0 ||
+                        selectedTags.every(tag => lead.tags.includes(tag));
+
+                    return matchesSearch && matchesTags;
+                });
+
                 return {
-                    data,
+                    data: filteredData,
                     nextPage: pageParam + 1,
                     hasMore: false,
                 };

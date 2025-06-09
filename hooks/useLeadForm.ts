@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Lead, LeadForm } from '../types';
-import { isValidEmail, isValidPhone } from '../utils/validation';
+import { isValidEmail } from '../utils/validation';
 
 type FormErrors = {
     name?: string;
@@ -56,12 +56,6 @@ export const useLeadForm = ({ initialLead, onSubmit }: UseLeadFormProps) => {
         if (lead.email?.trim()) {
             if (!isValidEmail(lead.email.trim())) {
                 newErrors.email = 'Please enter a valid email address';
-            }
-        }
-
-        if (lead.phone?.trim()) {
-            if (!isValidPhone(lead.phone.trim())) {
-                newErrors.phone = 'Phone number must be 9 digits';
             }
         }
 

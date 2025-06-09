@@ -6,8 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { leadsApi } from '../api/leadsApi';
 import { LeadFormComponent } from '../components/LeadForm';
 import { useLeadForm } from '../hooks/useLeadForm';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
+import { LeadsParamList } from '../types';
+
+type NewLeadScreenRouteProp = RouteProp<LeadsParamList, 'NewLead'>;
 
 export default function NewLeadScreen() {
+  const navigation = useNavigation();
+  const route = useRoute<NewLeadScreenRouteProp>();
   const {
     lead,
     errors,
@@ -22,6 +29,8 @@ export default function NewLeadScreen() {
         id: uuidv4(),
         createdAt: new Date().toISOString(),
       });
+      route.params?.onLeadCreated?.();
+      navigation.goBack();
     },
   });
 
