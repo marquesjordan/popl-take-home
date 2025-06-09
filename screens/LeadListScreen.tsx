@@ -1,35 +1,16 @@
-import React from 'react';
-import { FlatList, View } from 'react-native';
-import { FAB, List } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation';
-import { Lead } from '../types';
+import React from 'react';
+import { View } from 'react-native';
+import { FAB } from 'react-native-paper';
+import LeadList from '../components/LeadList';
+import { LeadsParamList } from '../types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'LeadList'>;
-
-// TODO: Replace static leads with useQuery + leadsApi.getAll()
-// Consider loading, error, and empty states
-const leads: Lead[] = [
-  // { id: 1, name: 'John Doe', email: 'john.doe@example.com' },
-  // { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com' },
-];
+type Props = NativeStackScreenProps<LeadsParamList, 'LeadList'>;
 
 export default function LeadListScreen({ navigation }: Props) {
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <FlatList
-        data={leads}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <List.Item
-            title={item.name}
-            description={item.email}
-            onPress={() =>
-              navigation.navigate('LeadDetail', { leadId: item.id.toString() })
-            }
-          />
-        )}
-      />
+      <LeadList />
 
       <FAB
         icon="plus"

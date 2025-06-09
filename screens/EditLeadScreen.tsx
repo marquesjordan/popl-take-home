@@ -3,49 +3,35 @@ import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { LeadFormComponent } from '../components/LeadForm';
-import { Lead, LeadForm } from '../types';
+import { Lead, LeadsParamList } from '../types';
 import { leadsApi } from '../api/leadsApi';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useLeadForm } from '../hooks/useLeadForm';
 
-type ParamList = { EditLead: { id: string } };
+type EditDetailRouteProp = RouteProp<LeadsParamList, 'EditLead'>;
+
 
 export default function EditLeadScreen() {
-    const { params } = useRoute<RouteProp<ParamList, 'EditLead'>>();
-    const [initialLead, setInitialLead] = useState<Partial<LeadForm>>();
-    const [loadError, setLoadError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchLead = async () => {
-            try {
-                const result = await leadsApi.getById(params.id);
-                setInitialLead({
-                    ...result.data,
-                    email: result.data.email || '',
-                    company: result.data.company || '',
-                    title: result.data.title || '',
-                    phone: result.data.phone || '',
-                    notes: result.data.notes || '',
-                    tags: result.data.tags?.join(', ') || ''
-                });
-            } catch (e) {
-                setLoadError('Lead was not found');
-            }
-        };
-        fetchLead();
-    }, [params.id]);
-
+    const { params: { lead } } = useRoute<EditDetailRouteProp>();
     const {
-        lead,
+        lead: updatedLead,
         errors,
         isSubmitting,
         submitError,
         handleChange,
         handleSubmit,
     } = useLeadForm({
-        initialLead,
+        initialLead: {
+            name: lead.name || '',
+            email: lead.email || '',
+            company: lead.company || '',
+            title: lead.title || '',
+            phone: lead.phone || '',
+            notes: lead.notes || '',
+            tags: lead.tags?.join(', ') || ''
+        },
         onSubmit: async (updatedLead) => {
-            await leadsApi.update(params.id, updatedLead);
+            await leadsApi.update(lead.id, updatedLead);
         },
     });
 
@@ -53,12 +39,20 @@ export default function EditLeadScreen() {
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <LeadFormComponent
-                    lead={lead}
+                    lead={{
+                        name: updatedLead.name || '',
+                        email: updatedLead.email || '',
+                        company: updatedLead.company || '',
+                        title: updatedLead.title || '',
+                        phone: updatedLead.phone || '',
+                        notes: updatedLead.notes || '',
+                        tags: updatedLead.tags || ''
+                    }}
                     errors={errors}
                     onChange={handleChange}
-                    submitError={loadError || submitError}
+                    submitError={submitError}
                     isSubmitting={isSubmitting}
-                    heading="Edit Lead"
+                    heading="Edit Lead Form"
                 />
             </ScrollView>
             <View style={styles.buttonContainer}>

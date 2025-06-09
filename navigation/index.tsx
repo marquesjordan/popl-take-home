@@ -4,14 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import LeadListScreen from '../screens/LeadListScreen';
 import LeadDetailScreen from '../screens/LeadDetailScreen';
 import NewLeadScreen from '../screens/NewLeadScreen';
+import EditLeadScreen from '../screens/EditLeadScreen';
+import { LeadsParamList } from '../types';
 
-export type RootStackParamList = {
-  LeadList: undefined;
-  LeadDetail: { leadId: string };
-  NewLead: undefined;
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<LeadsParamList>();
 
 export default function RootNavigator() {
   return (
@@ -32,6 +28,11 @@ export default function RootNavigator() {
           name="NewLead"
           component={NewLeadScreen}
           options={{ title: 'New Lead', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="EditLead"
+          component={EditLeadScreen}
+          options={{ title: 'Edit Lead', presentation: 'modal' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

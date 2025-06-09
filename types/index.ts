@@ -19,3 +19,10 @@ export interface LeadForm {
   tags: string;
   notes: string;
 }
+
+export type LeadsParamList = {
+  LeadList: undefined;
+  LeadDetail: { leadId: string };
+  NewLead: undefined;
+  EditLead: { lead: Lead };
+};

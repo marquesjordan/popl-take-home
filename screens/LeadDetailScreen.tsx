@@ -1,20 +1,39 @@
-import React from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation';
+import LeadDetailCard from '../components/LeadDetailCard';
+import { LeadsParamList, Lead } from '../types';
+import { leadsApi } from '../api/leadsApi';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'LeadDetail'>;
+type LeadDetailRouteProp = RouteProp<LeadsParamList, 'LeadDetail'>;
+type NavigationProp = NativeStackNavigationProp<LeadsParamList, 'LeadList'>;
 
-export default function LeadDetailScreen({ route }: Props) {
-  const { leadId } = route.params;
+export default function LeadDetailScreen() {
+  const navigation = useNavigation<NavigationProp>();
 
-  // TODO: Fetch this lead from the API using react-query and leadsApi.getById(leadId)
-  // Consider type safety, loading, and error states
+  const { params: { leadId } } = useRoute<LeadDetailRouteProp>();
+
+  const [leadDetail, setLeadDetail] = useState<Lead | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    const fetchLead = async () => {
+      try {
+        const data = await leadsApi.getById(leadId);
+        setLeadDetail(data);
+      } catch (e) {
+        setLoadError('Lead was not found');
+      }
+    };
+    fetchLead();
+  }, [leadId]);
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <Text>Lead ID: {leadId}</Text>
+      {leadDetail && <LeadDetailCard lead={leadDetail} onPress={() => navigation.navigate('EditLead', { lead: leadDetail })} />}
     </View>
   );
 }
